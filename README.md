@@ -17,9 +17,17 @@ public class Orfeus {
     /// Apollo client wrapper
     public lazy var apollo = ApolloClient(url: URL(string: "your url here")!) // i.e SplitNetwork
 ```
-2.1. or Re-assign the static shared properties
+or Re-assign the static shared properties
 ```swift
-Orfeus.shared = ApolloClient(url: URL(string: "your url here")!)
+import Apollo
+
+@main
+struct YourSwiftUiApp: App {
+    // Setup on launch
+    init() {
+        Orfeus.shared.apollo = ApolloClient(url: URL(string: "url string here")!)
+    }
+...
 ```
 3. Use the Agents to manage state
 ```swift
