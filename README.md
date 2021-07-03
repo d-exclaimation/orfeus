@@ -47,3 +47,22 @@ struct ContentView: View {
     }
 }
 ```
+or take advantage of the state enum for better type matching
+```swift
+...
+    var body: some View {
+        Group {
+            switch someQuery.state {
+            case .idle:
+                EmptyView()
+            case .loading:
+                Text("loading...")
+            case .success(let data):
+                Text("\(data.some)")
+            case .failure(let err):
+                Text(err.message)
+            }
+        }
+    }
+}
+```
