@@ -25,7 +25,9 @@ import Apollo
 struct YourSwiftUiApp: App {
     // Setup on launch
     init() {
-        Orfeus.shared.apollo = ApolloClient(url: URL(string: "url string here")!)
+        Orfeus.shared.createClient =  {
+            ApolloClient(url: URL(string: "url string here")!)
+        }
     }
 ...
 ```
@@ -33,7 +35,7 @@ struct YourSwiftUiApp: App {
 ```swift
 struct ContentView: View {
     @StateObject
-    var someQuery = Orfeus.use(
+    var someQuery = Orfeus.agent(
         query: SomeQuery()
     )
 
