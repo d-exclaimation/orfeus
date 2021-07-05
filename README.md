@@ -8,14 +8,14 @@ Haven't made this to work as package at all
 
 ### Manual
 1. Clone / Copy all the files in a directory in your project
-2. Update the Apollo Client instansiation values to match your requirement i.e. SplitNetwork or regular URL
+2. Update the Apollo Client instansiator function to match your requirement i.e. SplitNetwork or regular URL
 ```swift
 public class Orfeus {
     /// Shared singleton instance of Orfeus
     public static let shared = Orfeus()
     
-    /// Apollo client wrapper
-    public lazy var apollo = ApolloClient(url: URL(string: "your url here")!) // i.e SplitNetwork
+    /// Apollo client instasiator
+    public var createClient = { ApolloClient(url: URL(string: "your url here")!) } // i.e SplitNetwork
 ```
 or Re-assign the static shared properties
 ```swift
@@ -68,3 +68,9 @@ or take advantage of the state enum for better type matching
     }
 }
 ```
+
+## Documentation
+- [`Queries`](./Documentation/Queries.md): Queries and Awaiting Queries
+- [`Mutation`](./Documentation/Mutation.md): Mutations, Invalidation, Side Effects
+- [`AgentState`](./Documentation/AgentState.md): Process State and Rendering State
+- [`Fault`](./Documentation/Fault.md): Full fault tolerance simple error handling 

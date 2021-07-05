@@ -232,5 +232,31 @@ extension Orfeus {
             onError: onError
         ).load()
     }
+
+    /// Use Wrapped GraphQL Subscription Agent
+    public static func wrapped<TSubscription: GraphQLSubscription, Payload>(
+        stream gql: TSubscription,
+        initial: Payload,
+        reducer: @escaping StreamAgent<TSubscription, Payload>.StreamReducer,
+        cancelOn: StreamAgent<TSubscription, Payload>.CancelTrigger = .destroy,
+        pause: Bool = false,
+        onError: @escaping StreamAgent<TSubscription, Payload>.ErrorReducer = { res, _ in res }
+    ) -> StateObject<StreamAgent<TSubscription, Payload>> {
+        StateObject(wrappedValue: pause 
+            ? StreamAgent(
+                subscription: gql,
+                initial: initial,
+                reducer: reducer,
+                cancelOn: cancelOn,
+                onError: onError) 
+            : StreamAgent(
+                subscription: gql,
+                initial: initial,
+                reducer: reducer,
+                cancelOn: cancelOn,
+                onError: onError).load()
+        )
+    }
+     
 }
 

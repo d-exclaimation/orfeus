@@ -1,6 +1,8 @@
 # QueryAgent
 GraphQL Query Observable to manage Query State
 
+QueryAgent will manage state of incoming request out of the box
+
 ## Usage: Initialize
 
 ### Orfeus agent "hook"
@@ -30,6 +32,8 @@ var someQuery = QueryAgent(
 Highly recommend taking advatage of `state` property as it allow for type safe, clear declarative workflow
 
 ## Usage: State
+
+Learn more about state in [`AgentState`](./AgentState.md)
 
 ### State with Switch on view builder
 State of the Query for better clarify over current situtation of data
@@ -62,46 +66,7 @@ State of the Query for better clarify over current situtation of data
      }
  }
  ```
-
- ### State with custom Suspensing View
- ```swift
- struct ContentView: View {
-     @StateObject
-     var someQuery = QueryAgent(...).load()
-     var body: some View {
-         view(state: someQuery.state)
-     }
- }
-
- extension ContentView: SuspensingView {
-     var loadingView: some View {
-         Text("...loading")
-     }
-
-     func successView(for data: SomeQuery.Data) -> some View {
-         Text("\(data.some)")
-     }
-
-     func faultView(for fault: Orfeus.Fault) -> some View {
-         Text("\(fault.message)")
-     }
- }
- ```
- 
- ### State with React-Query style
- ```swift
- struct ContentView: View {
-     @StateObject
-     var someQuery = QueryAgent(...).load()
-     @ViewBuilder var body: some View {
-         if someQuery.isLoading {
-             Text("...loading")
-         } else {
-             SomeView(data: someQuery.data ?? SomethingElse()) 
-         }
-     }
- }
- ```
+ more examples on [`AgentState`](./AgentState.md)
 
  ## APIs
 
@@ -119,6 +84,8 @@ State of the Query for better clarify over current situtation of data
  QueryAgent(...).invalidate()
  ```
  **Description**: Resend Query request and overwrite state
+
+ QueryAgent conforms to the protocol [`OrfeusInvalidatableAgent`](./../Orfeus/Agent.swift) which require a invalidate method. 
 
 # AwaitingAgent
 GraphQL Query Observable to manage Query State but watch for cache value changes 
@@ -158,95 +125,30 @@ var someQuery = AwaitingAgent(
 // Data is not watched
 ```
 
-Highly recommend taking advatage of `state` property as it allow for type safe, clear declarative workflow
+Most of the APIs is identical to [`QueryAgent`](#queryagent)
 
-## Usage: State
+## Getting values from other state
 
-### State with Switch on view builder
-State of the Query for better clarify over current situtation of data
+It's common to use other properties to fetch the correct data. You can do this by initializing all properties from the init function of your SwiftUI View.
 
- ```swift
- switch roomAgent.state {
- case .idle:
-     EmptyView("Not loaded")
- case .loading:
-     Text("Loading...")
- case .succeed(let data):
-     LazyVStack {
-         ForEach(data.posts, content: Post.init(post:))
-     }
- }
- case .failed(_):
-     Text("No data")
- }
- ```
+```swift
+init(id: id) {
+    self.id = id
+    _someQuery = StateObject(wrappedValue: Orfeus.agent(
+        query: SomeGraphQLQuery(id: id),
+        fallback: nil
+    ))
+}
+```
 
- ### State with OrfeusSuspense
- ```swift
- struct ContentView: View {
-     @StateObject
-     var someQuery = AwaitingAgent(...).watch()
-     var body: some View {
-         OrfeusSuspense(state: state) { data in
-             SomeView(data: data)
-         }
-     }
- }
- ```
+There is shorthand for this so it's a lot nicer with less boilerplate-ish
 
- ### State with custom Suspensing View
- ```swift
- struct ContentView: View {
-     @StateObject
-     var someQuery = AwaitingAgent(...).watch()
-     var body: some View {
-         view(state: someQuery.state)
-     }
- }
-
- extension ContentView: SuspensingView {
-     var loadingView: some View {
-         Text("...loading")
-     }
-
-     func successView(for data: SomeQuery.Data) -> some View {
-         Text("\(data.some)")
-     }
-
-     func faultView(for fault: Orfeus.Fault) -> some View {
-         Text("\(fault.message)")
-     }
- }
- ```
- 
- ### State with React-Query style
- ```swift
- struct ContentView: View {
-     @StateObject
-     var someQuery = AwaitingAgent(...).watch()
-     @ViewBuilder var body: some View {
-         if someQuery.isLoading {
-             Text("...loading")
-         } else {
-             SomeView(data: someQuery.data ?? SomethingElse()) 
-         }
-     }
- }
- ```
-
- ## APIs
-
- #### Load query agent
-
- ```swift
- QueryAgent(...).watch()
- ```
-
- **Description**: Watch Query request cache and return agent
-
-  #### Invalidate query agent
-
- ```swift
- QueryAgent(...).invalidate()
- ```
- **Description**: Re-initialze watch Query request and overwrite state
+```swift
+init(id: id) {
+    self.id = id
+    _someQuery = Orfeus.wrapped(
+        query: SomeGraphQLQuery(id: id),
+        fallback: nil
+    )
+}
+```
