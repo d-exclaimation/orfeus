@@ -1,6 +1,6 @@
 # Fault
 
-Apollo Client provides their own abstraction for Error called GraphQL, but they use Swift's native `Result` type for passing in that information. These errors are only available once Result passed from their callback is a success, then you can see the GraphQL Errors. This creates an issue where you have to do error handling twice and nested.
+Apollo Client provides their own abstraction for Error called GraphQLError, but they did not use Swift's native `Result` type for passing in that information. These errors are only available once Result passed from their callback is a success, then you can see the GraphQL Errors. This creates an issue where you have to do error handling twice and nested.
 
 Orfeus tries to provide a simpler experience and flatten the errors into one error using a custom enum called `Fault`
 

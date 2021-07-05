@@ -66,7 +66,7 @@ extension Orfeus {
         ///     Text("No data")
         /// }
         /// ```
-        public var state: AgentState<StreamPayload> = .idle
+        public var state: AgentState<StreamPayload> = .idle 
         
         /// Network request cancellable request
         ///
@@ -109,7 +109,7 @@ extension Orfeus {
         }
         
         /// Register listener to perform side effects after data is given
-        public func register(listener: @escaping (StreamPayload) -> Void) -> Void {
+        public func sink(listener: @escaping (StreamPayload) -> Void) -> Void {
             listeners.append(listener)
         }
         
@@ -142,6 +142,9 @@ extension Orfeus {
         private let errorHandler: ErrorReducer
     
         private var listeners = [(StreamPayload) -> Void]()
+
+        // Use this for on change
+        public var changeRef = Date()
         
         /// Gettting the current payload
         private var payload: StreamPayload {
@@ -188,11 +191,12 @@ extension Orfeus {
         }
         
         fileprivate func handleSuccess(data: TSubscription.Data) -> Void {
+            changeRef = Date()
             withAnimation {
                 let newPayload = reducer(payload, data)
                 state = .succeed(newPayload)
-                for listener in listeners {
-                    listener(newPayload)
+                listeners.forEach { 
+                    listener in listener(newPayload) 
                 }
             }
         }

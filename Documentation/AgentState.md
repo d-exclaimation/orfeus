@@ -2,7 +2,7 @@
 
 AgentState represent current data and process of the request.
 
-In Apollo Client React for example, data information is split into `loading`, `data`, and `error`. This is fine approach but the type system won't be able to infer that if `error` is `nil`, data must not be `nil`.
+In Apollo Client React for example, data information is split into `loading`, `data`, and `error`. This is a fine approach but the type system won't be able to infer that if `error` is `nil`, data must not be `nil`.
 
 Therefore, Orfeus uses custom enum to present current state of the process [(Insipired by Pigeon, a React-Query for Swift)](https://github.com/fmo91/Pigeon). Think of a simple state machine. This way if request succeed data will be guaranteed to be not nil, and vice versa
 
@@ -132,3 +132,5 @@ var body: some View {
 	}
 }
 ```
+
+Note: If you used agents, they set AgentState as Published, thus you can use the `onReceive` handler
