@@ -204,7 +204,6 @@ extension Orfeus {
         /// GraphQL Network Request
         fileprivate func request() -> Cancellable {
             state = .succeed(initialPayload)
-            print("a")
             return Orfeus.shared.subscribe(
                 subscription: subscription,
                 onSuccess: handleSuccess(data:),
