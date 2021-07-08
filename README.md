@@ -72,5 +72,6 @@ or take advantage of the state enum for better type matching
 ## Documentation
 - [`Queries`](./Documentation/Queries.md): Queries and Awaiting Queries
 - [`Mutation`](./Documentation/Mutation.md): Mutations, Invalidation, Side Effects
+- [`Subscriptions`](./Documentation/Subscriptions.md): Mutations, Invalidation, Side Effects
 - [`AgentState`](./Documentation/AgentState.md): Process State and Rendering State
 - [`Fault`](./Documentation/Fault.md): Full fault tolerance simple error handling 
